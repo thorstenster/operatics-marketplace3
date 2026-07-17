@@ -1,8 +1,3 @@
----
-name: sap-customer-bp-mapping
-description: Use this skill whenever a Debitor (KUNNR) or Kreditor (LIFNR) muss einem Geschäftspartner (BU_PARTNER) zugeordnet werden, oder umgekehrt. WICHTIG - KUNNR und BU_PARTNER sind NICHT automatisch identisch, auch wenn die Nummern zufällig gleich aussehen — sie leben in getrennten Nummernkreisen und müssen über die Customer-Vendor-Integration (CVI) verknüpft werden. Trigger bei Fragen wie "wie heißt der Kunde/Geschäftspartner zu Debitor X", "welcher Geschäftspartner steckt hinter Kreditor Y", "löse KUNNR in BU_PARTNER auf" oder immer dann, wenn ein KUNNR/LIFNR aus einem Beleg (VBAK, EKKO, ...) in einen lesbaren Partnernamen übersetzt werden soll.
----
-
 # Debitor/Kreditor ↔ Geschäftspartner (CVI-Verknüpfung)
 
 ## Der Fallstrick
@@ -51,3 +46,26 @@ zum Geschäftspartner `0000000012` ("Kundenfutter GmbH").
 
 **KUNNR ≠ BU_PARTNER.** Immer über `CVI_CUST_LINK`/`CVI_VEND_LINK` + `BUT000` auflösen,
 nie über Nummerngleichheit raten.
+
+## Bevorzugter Weg, wenn ein CDS-View mit Assoziation verfügbar ist
+
+Wenn der Ausgangsbeleg über einen modernen CDS-View gelesen wird (z. B. `I_SalesOrder`
+für Verkaufsaufträge), NICHT den manuellen CVI-Umweg gehen. Stattdessen die Assoziation
+direkt nutzen:
+
+1. `I_SalesOrder` liefert `SoldToParty` (= KUNNR) zum Beleg.
+2. `I_Customer`, gefiltert auf `Customer` = `SoldToParty`, liefert bereits aufgelöste
+   Klartextfelder — u. a. `CustomerName`, `CustomerFullName`, `BPCustomerName`,
+   `OrganizationBPName1`, Adresse (Stadt, PLZ, Straße).
+
+Das ist der direkte, assoziative Weg (so wie es ein Fiori-App-Entwickler auch tun würde)
+und spart den Zwischenschritt über `CVI_CUST_LINK`/`BUT000`. Der CVI-Weg (oben) bleibt
+nötig, wenn nur klassische Tabellen wie `VBAK`/`EKKO` ohne zugehörigen CDS-View zur
+Verfügung stehen.
+
+**Beispiel (verifiziert auf S4S):**
+```
+I_SalesOrder: SalesOrder = 0000000003 → SoldToParty = 0000000001
+I_Customer:   Customer = 0000000001 → CustomerName = "Kundenfutter GmbH",
+              CustomerFullName = "Firma Kundenfutter GmbH/53179 Bonn"
+```
