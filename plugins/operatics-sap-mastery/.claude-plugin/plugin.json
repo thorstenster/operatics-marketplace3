@@ -1,6 +1,6 @@
 {
-  "name": "operatics-sap-mastery",
-  "version": "0.1.1",
+  "name": "operatics-sap-mastery2",
+  "version": "0.1.2",
   "description": "MCP Server and SAP/ABAP-Skills für Arbeit mit S/4HANA-Systemen via SAP MCP Tools (ABAP-Code, Tabellenabfragen, Workflow, Background Jobs, Application Log, abapGit, SoD-Audits, User-Stammdaten, Transport-Binaries, S/4-Sandbox-Setup).",
   "author": {
     "name": "Thorsten Franz",
