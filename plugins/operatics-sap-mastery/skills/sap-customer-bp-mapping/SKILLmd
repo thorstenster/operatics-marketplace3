@@ -1,6 +1,6 @@
 ---
 name: sap-customer-bp-mapping
-description: >
+description: 
   Use this skill whenever a Debitor (KUNNR) or Kreditor (LIFNR) muss einem Geschäftspartner
   (BU_PARTNER) zugeordnet werden, oder umgekehrt. WICHTIG: KUNNR und BU_PARTNER sind NICHT
   automatisch identisch, auch wenn die Nummern zufällig gleich aussehen — sie leben in
